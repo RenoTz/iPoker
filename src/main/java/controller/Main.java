@@ -25,7 +25,10 @@ public class Main {
 
 		while (!joueur.isWon()) {
 
-			// distribution de 2 cartes à chaque joueur
+			// PRE-FLOP
+			System.out.println(SEPARATEUR);
+			System.out.println("------- Le PRE FLOP --------");
+			System.out.println(SEPARATEUR);
 			for (int i = 0; i < 2; i++) {
 				joueurs.forEach(j -> j.getCartes().add(Iterables.getLast(jeuDeCartes)));
 				jeuDeCartes.remove(jeuDeCartes.size() - 1);
@@ -34,7 +37,7 @@ public class Main {
 
 			affichageCartesJoueurs(joueurs);
 
-			// premier tour : on pose 3 cartes
+			// FLOP
 			System.out.println(SEPARATEUR);
 			System.out.println("------- Le FLOP --------");
 			System.out.println(SEPARATEUR);
@@ -45,6 +48,7 @@ public class Main {
 
 			afficherCarte(cartesVisibles);
 
+			// TURN
 			System.out.println(SEPARATEUR);
 			System.out.println("------- La TURN --------");
 			System.out.println(SEPARATEUR);
@@ -53,6 +57,7 @@ public class Main {
 
 			afficherCarte(cartesVisibles);
 
+			// RIVIERE
 			System.out.println(SEPARATEUR);
 			System.out.println("------- La RIVIERE --------");
 			System.out.println(SEPARATEUR);
