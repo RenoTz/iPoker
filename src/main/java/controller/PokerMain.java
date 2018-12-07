@@ -7,8 +7,9 @@ import com.google.common.collect.Lists;
 
 import model.Carte;
 import model.Joueur;
+import utils.CombinaisonUtil;
 
-public class Main {
+public class PokerMain {
 
 	private static final String SEPARATEUR = "-----------------------------------";
 
@@ -26,16 +27,13 @@ public class Main {
 		while (!joueur.isWon()) {
 
 			// PRE-FLOP
-			System.out.println(SEPARATEUR);
-			System.out.println("------- Le PRE FLOP --------");
-			System.out.println(SEPARATEUR);
 			for (int i = 0; i < 2; i++) {
 				joueurs.forEach(j -> j.getCartes().add(Iterables.getLast(jeuDeCartes)));
 				jeuDeCartes.remove(jeuDeCartes.size() - 1);
-				System.out.println();
 			}
 
 			affichageCartesJoueurs(joueurs);
+			afficherMainDesJoueurs(joueurs, cartesVisibles);
 
 			// FLOP
 			System.out.println(SEPARATEUR);
@@ -47,6 +45,7 @@ public class Main {
 			}
 
 			afficherCarte(cartesVisibles);
+			afficherMainDesJoueurs(joueurs, cartesVisibles);
 
 			// TURN
 			System.out.println(SEPARATEUR);
@@ -56,6 +55,7 @@ public class Main {
 			jeuDeCartes.remove(jeuDeCartes.size() - 1);
 
 			afficherCarte(cartesVisibles);
+			afficherMainDesJoueurs(joueurs, cartesVisibles);
 
 			// RIVIERE
 			System.out.println(SEPARATEUR);
@@ -65,11 +65,24 @@ public class Main {
 			jeuDeCartes.remove(jeuDeCartes.size() - 1);
 
 			afficherCarte(cartesVisibles);
+			afficherMainDesJoueurs(joueurs, cartesVisibles);
 
 			// sortie du jeu
 			joueur.setWon(true);
 		}
 
+	}
+
+	private static void afficherMainDesJoueurs(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
+
+		final List<Carte> cartesJoueursPlusCartesVisibles = Lists.newArrayList();
+		for (final Joueur joueur : joueurs) {
+			cartesJoueursPlusCartesVisibles.addAll(joueur.getCartes());
+			cartesJoueursPlusCartesVisibles.addAll(cartesVisibles);
+			System.out.println("Main de " + joueur.getNom() + " : "
+					+ CombinaisonUtil.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles));
+			cartesJoueursPlusCartesVisibles.clear();
+		}
 	}
 
 	private static void affichageCartesJoueurs(final List<Joueur> joueurs) {
@@ -86,7 +99,7 @@ public class Main {
 	private static void afficherCarte(final List<Carte> cartes) {
 
 		for (final Carte c : cartes) {
-			System.out.print(c.getCode() + " " + c.getCouleur());
+			System.out.print(c.getCarteEnum().name() + " " + c.getCouleur());
 			if (cartes.indexOf(c) != cartes.size() - 1) {
 				System.out.print(" | ");
 			}

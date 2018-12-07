@@ -2,14 +2,12 @@ package model;
 
 public class Carte {
 
-	private int valeur;
-	private String code;
+	private final CarteEnum carteEnum;
 	private ColorEnum couleur;
 
-	public Carte(final int valeur, final String code, final ColorEnum couleur) {
+	public Carte(final CarteEnum carteEnum, final ColorEnum couleur) {
 
-		this.valeur = valeur;
-		this.code = code;
+		this.carteEnum = carteEnum;
 		this.couleur = couleur;
 	}
 
@@ -23,24 +21,14 @@ public class Carte {
 		this.couleur = couleur;
 	}
 
-	public int getValeur() {
+	public CarteEnum getCarteEnum() {
 
-		return this.valeur;
+		return this.carteEnum;
 	}
 
-	public void setValeur(int valeur) {
+	public Integer getValeur() {
 
-		this.valeur = valeur;
-	}
-
-	public String getCode() {
-
-		return this.code;
-	}
-
-	public void setCode(String code) {
-
-		this.code = code;
+		return this.carteEnum.getValeur();
 	}
 
 }
