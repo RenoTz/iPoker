@@ -6,6 +6,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import model.Carte;
+import model.CarteCombinaison;
 import model.Joueur;
 import utils.CombinaisonUtil;
 
@@ -13,23 +14,27 @@ public class PokerMain {
 
 	private static final String SEPARATEUR = "-----------------------------------";
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		// creation d'un joueur
 		final Joueur joueur = new Joueur("Renaud");
-		final List<Joueur> joueurs = Lists.newArrayList(joueur);
+		final Joueur adversaire = new Joueur("Gilbert");
+		final List<Joueur> joueurs = Lists.newArrayList(joueur, adversaire);
 
 		// creation du jeu de cartes
 		final Setup setup = new Setup();
 		final List<Carte> jeuDeCartes = setup.creerJeuDeCartes();
 		final List<Carte> cartesVisibles = Lists.newArrayList();
 
-		while (!joueur.isWon()) {
+		while (!joueurs.stream().filter(j -> j.isWon()).anyMatch(j -> j.isWon())) {
 
 			// PRE-FLOP
 			for (int i = 0; i < 2; i++) {
-				joueurs.forEach(j -> j.getCartes().add(Iterables.getLast(jeuDeCartes)));
-				jeuDeCartes.remove(jeuDeCartes.size() - 1);
+
+				for (final Joueur j : joueurs) {
+					j.getCartes().add(Iterables.getLast(jeuDeCartes));
+					jeuDeCartes.remove(jeuDeCartes.size() - 1);
+				}
 			}
 
 			affichageCartesJoueurs(joueurs);
@@ -79,8 +84,9 @@ public class PokerMain {
 		for (final Joueur joueur : joueurs) {
 			cartesJoueursPlusCartesVisibles.addAll(joueur.getCartes());
 			cartesJoueursPlusCartesVisibles.addAll(cartesVisibles);
-			System.out.println("Main de " + joueur.getNom() + " : "
-					+ CombinaisonUtil.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles));
+			final CarteCombinaison carteCombinaison = CombinaisonUtil.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles);
+			System.out.println(
+					"Main de " + joueur.getNom() + " : " + carteCombinaison.getCombinaison() + " de " + carteCombinaison.getCarte().name());
 			cartesJoueursPlusCartesVisibles.clear();
 		}
 	}
@@ -100,7 +106,7 @@ public class PokerMain {
 
 		for (final Carte c : cartes) {
 			System.out.print(c.getCarteEnum().name() + " " + c.getCouleur());
-			if (cartes.indexOf(c) != cartes.size() - 1) {
+			if (cartes.indexOf(c) != (cartes.size() - 1)) {
 				System.out.print(" | ");
 			}
 		}
