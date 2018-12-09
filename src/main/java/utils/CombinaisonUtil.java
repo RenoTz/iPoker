@@ -21,12 +21,13 @@ public class CombinaisonUtil {
 	public static CarteCombinaison getMeilleureCombinaison(final List<Carte> cartes) {
 
 		final CarteCombinaison retour = new CarteCombinaison();
+		retour.setHauteur(getCarteHaute(cartes));
+		retour.setCombinaison(CombinaisonEnum.HAUTEUR);
 
 		if (hasQuinteFlush(cartes)) {
-			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.QUINTE_FLUSH);
 		} else if (hasCarre(cartes)) {
-			retour.setCarte(CarteEnum.AS);
+			retour.setCarte(getCarteCarre(cartes));
 			retour.setCombinaison(CombinaisonEnum.CARRE);
 		} else if (hasFullHouse(cartes)) {
 			retour.setCarte(CarteEnum.AS);
@@ -46,12 +47,21 @@ public class CombinaisonUtil {
 		} else if (hasPaire(cartes)) {
 			retour.setCarte(CombinaisonUtil.getCartePaire(cartes));
 			retour.setCombinaison(CombinaisonEnum.PAIRE);
-		} else {
-			retour.setCombinaison(CombinaisonEnum.HAUTEUR);
-			retour.setCarte(getCarteHaute(cartes));
 		}
 
 		return retour;
+	}
+
+	private static CarteEnum getCarteCarre(final List<Carte> cartes) {
+
+		final List<Integer> valeurs = getValeursCartesTriees(cartes);
+
+		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
+
+		final Integer valeurCarteCarre = cartesIdentiques.entrySet().stream().filter(v -> v.getValue() == 4)
+				.map(e -> e.getKey()).findFirst().get();
+
+		return CarteEnum.getCarteEnumByValeur(valeurCarteCarre);
 	}
 
 	public static boolean hasPaire(final List<Carte> cartes) {
@@ -65,18 +75,19 @@ public class CombinaisonUtil {
 
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
 
-		final Integer valeurPaire = cartesIdentiques.entrySet().stream().filter(e -> e.getValue() == 2).map(e -> e.getKey()).findFirst()
-				.get();
+		final Integer valeurPaire = cartesIdentiques.entrySet().stream().filter(e -> e.getValue() == 2)
+				.map(e -> e.getKey()).findFirst().get();
 
 		return CarteEnum.getCarteEnumByValeur(valeurPaire);
 	}
+
 	public static boolean hasDoublePaire(final List<Carte> cartes) {
 
 		final List<Integer> valeurs = getValeursCartesTriees(cartes);
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
 
-		final List<Integer> paires = cartesIdentiques.entrySet().stream().filter(c -> c.getValue() == 2).map(c -> c.getKey())
-				.collect(Collectors.toList());
+		final List<Integer> paires = cartesIdentiques.entrySet().stream().filter(c -> c.getValue() == 2)
+				.map(c -> c.getKey()).collect(Collectors.toList());
 
 		return paires.size() == 2;
 	}
@@ -107,7 +118,7 @@ public class CombinaisonUtil {
 		int i = 1;
 		int valeurPrecedente = -1;
 		for (final Integer v : valeurs) {
-			if ((valeurPrecedente + 1) == v) {
+			if (valeurPrecedente + 1 == v) {
 				i++;
 			}
 			valeurPrecedente = v;
@@ -122,8 +133,8 @@ public class CombinaisonUtil {
 		int i = 1;
 		Entry<Integer, ColorEnum> valeurPrecedente = null;
 		for (final Entry<Integer, ColorEnum> v : valeursParCouleur.entrySet()) {
-			if ((valeurPrecedente != null)
-					&& (((valeurPrecedente.getKey() + 1) == v.getKey()) && (valeurPrecedente.getValue() == v.getValue()))) {
+			if (valeurPrecedente != null && valeurPrecedente.getKey() + 1 == v.getKey()
+					&& valeurPrecedente.getValue() == v.getValue()) {
 				i++;
 			}
 			valeurPrecedente = v;
@@ -139,15 +150,15 @@ public class CombinaisonUtil {
 		Entry<Integer, ColorEnum> valeurPrecedente = null;
 		boolean asCarteHaute = false;
 		for (final Entry<Integer, ColorEnum> v : valeursParCouleur.entrySet()) {
-			if ((valeurPrecedente != null) && ((((valeurPrecedente.getKey() + 1) == v.getKey())
-					|| ((valeurPrecedente.getKey() == CarteEnum.ROI.getValeur()) && (v.getKey() == CarteEnum.AS.getValeur())))
-					&& (valeurPrecedente.getValue() == v.getValue()))) {
+			if (valeurPrecedente != null && (valeurPrecedente.getKey() + 1 == v.getKey()
+					|| valeurPrecedente.getKey() == CarteEnum.ROI.getValeur() && v.getKey() == CarteEnum.AS.getValeur())
+					&& valeurPrecedente.getValue() == v.getValue()) {
 				i++;
 				asCarteHaute = v.getKey() == CarteEnum.AS.getValeur();
 			}
 			valeurPrecedente = v;
 		}
-		return (i >= 5) && asCarteHaute;
+		return i >= 5 && asCarteHaute;
 	}
 
 	public static boolean hasFullHouse(final List<Carte> cartes) {
@@ -224,8 +235,7 @@ public class CombinaisonUtil {
 
 		final List<Integer> valeursTriees = getValeursCartesTriees(cartes);
 
-		return CarteEnum.AS.getValeur() == Iterables.getFirst(valeursTriees, 0)
-				? CarteEnum.AS
+		return CarteEnum.AS.getValeur() == Iterables.getFirst(valeursTriees, 0) ? CarteEnum.AS
 				: CarteEnum.getCarteEnumByValeur(Iterables.getLast(valeursTriees));
 
 	}
