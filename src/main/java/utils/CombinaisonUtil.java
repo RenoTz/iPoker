@@ -18,33 +18,33 @@ import model.CombinaisonEnum;
 
 public class CombinaisonUtil {
 
-	public static CarteCombinaison getMeilleureCombinaison(final List<Carte> cartes) {
+	public CarteCombinaison getMeilleureCombinaison(final List<Carte> cartes) {
 
 		final CarteCombinaison retour = new CarteCombinaison();
 		retour.setHauteur(getCarteHaute(cartes));
 		retour.setCombinaison(CombinaisonEnum.HAUTEUR);
 
-		if (hasQuinteFlush(cartes)) {
+		if (this.hasQuinteFlush(cartes)) {
 			retour.setCombinaison(CombinaisonEnum.QUINTE_FLUSH);
-		} else if (hasCarre(cartes)) {
+		} else if (this.hasCarre(cartes)) {
 			retour.setCarte(getCarteCarre(cartes));
 			retour.setCombinaison(CombinaisonEnum.CARRE);
-		} else if (hasFullHouse(cartes)) {
+		} else if (this.hasFullHouse(cartes)) {
 			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.FULL_HOUSE);
-		} else if (hasCouleur(cartes)) {
+		} else if (this.hasCouleur(cartes)) {
 			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.COULEUR);
-		} else if (hasQuinte(cartes)) {
+		} else if (this.hasQuinte(cartes)) {
 			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.QUINTE);
-		} else if (hasBrelan(cartes)) {
+		} else if (this.hasBrelan(cartes)) {
 			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.BRELAN);
-		} else if (hasDoublePaire(cartes)) {
+		} else if (this.hasDoublePaire(cartes)) {
 			retour.setCarte(CarteEnum.AS);
 			retour.setCombinaison(CombinaisonEnum.DOUBLE_PAIRE);
-		} else if (hasPaire(cartes)) {
+		} else if (this.hasPaire(cartes)) {
 			retour.setCarte(CombinaisonUtil.getCartePaire(cartes));
 			retour.setCombinaison(CombinaisonEnum.PAIRE);
 		}
@@ -58,13 +58,13 @@ public class CombinaisonUtil {
 
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
 
-		final Integer valeurCarteCarre = cartesIdentiques.entrySet().stream().filter(v -> v.getValue() == 4)
-				.map(e -> e.getKey()).findFirst().get();
+		final Integer valeurCarteCarre = cartesIdentiques.entrySet().stream().filter(v -> v.getValue() == 4).map(e -> e.getKey())
+				.findFirst().get();
 
 		return CarteEnum.getCarteEnumByValeur(valeurCarteCarre);
 	}
 
-	public static boolean hasPaire(final List<Carte> cartes) {
+	public boolean hasPaire(final List<Carte> cartes) {
 
 		return hasNombreCartesSouhaite(cartes, 2);
 	}
@@ -75,34 +75,34 @@ public class CombinaisonUtil {
 
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
 
-		final Integer valeurPaire = cartesIdentiques.entrySet().stream().filter(e -> e.getValue() == 2)
-				.map(e -> e.getKey()).findFirst().get();
+		final Integer valeurPaire = cartesIdentiques.entrySet().stream().filter(e -> e.getValue() == 2).map(e -> e.getKey()).findFirst()
+				.get();
 
 		return CarteEnum.getCarteEnumByValeur(valeurPaire);
 	}
 
-	public static boolean hasDoublePaire(final List<Carte> cartes) {
+	public boolean hasDoublePaire(final List<Carte> cartes) {
 
 		final List<Integer> valeurs = getValeursCartesTriees(cartes);
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
 
-		final List<Integer> paires = cartesIdentiques.entrySet().stream().filter(c -> c.getValue() == 2)
-				.map(c -> c.getKey()).collect(Collectors.toList());
+		final List<Integer> paires = cartesIdentiques.entrySet().stream().filter(c -> c.getValue() == 2).map(c -> c.getKey())
+				.collect(Collectors.toList());
 
 		return paires.size() == 2;
 	}
 
-	public static boolean hasBrelan(final List<Carte> cartes) {
+	public boolean hasBrelan(final List<Carte> cartes) {
 
 		return hasNombreCartesSouhaite(cartes, 3);
 	}
 
-	public static boolean hasCarre(final List<Carte> cartes) {
+	public boolean hasCarre(final List<Carte> cartes) {
 
 		return hasNombreCartesSouhaite(cartes, 4);
 	}
 
-	public static boolean hasCouleur(final List<Carte> cartes) {
+	public boolean hasCouleur(final List<Carte> cartes) {
 
 		final List<ColorEnum> couleurs = getCouleursCartesTriees(cartes);
 
@@ -111,14 +111,14 @@ public class CombinaisonUtil {
 		return couleurs.stream().anyMatch(c -> cartesDeMemeCouleur.get(c) >= 5);
 	}
 
-	public static boolean hasQuinte(final List<Carte> cartes) {
+	public boolean hasQuinte(final List<Carte> cartes) {
 
 		final List<Integer> valeurs = getValeursCartesTriees(cartes);
 
 		int i = 1;
 		int valeurPrecedente = -1;
 		for (final Integer v : valeurs) {
-			if (valeurPrecedente + 1 == v) {
+			if ((valeurPrecedente + 1) == v) {
 				i++;
 			}
 			valeurPrecedente = v;
@@ -126,15 +126,15 @@ public class CombinaisonUtil {
 		return i >= 5;
 	}
 
-	public static boolean hasQuinteFlush(final List<Carte> cartes) {
+	public boolean hasQuinteFlush(final List<Carte> cartes) {
 
 		final Map<Integer, ColorEnum> valeursParCouleur = getValeursCartesTrieesParCouleur(cartes);
 
 		int i = 1;
 		Entry<Integer, ColorEnum> valeurPrecedente = null;
 		for (final Entry<Integer, ColorEnum> v : valeursParCouleur.entrySet()) {
-			if (valeurPrecedente != null && valeurPrecedente.getKey() + 1 == v.getKey()
-					&& valeurPrecedente.getValue() == v.getValue()) {
+			if ((valeurPrecedente != null) && ((valeurPrecedente.getKey() + 1) == v.getKey())
+					&& (valeurPrecedente.getValue() == v.getValue())) {
 				i++;
 			}
 			valeurPrecedente = v;
@@ -142,26 +142,32 @@ public class CombinaisonUtil {
 		return i >= 5;
 	}
 
-	public static boolean hasQuinteFlushRoyale(final List<Carte> cartes) {
+	public boolean hasQuinteFlushRoyale(final List<Carte> cartes) {
 
 		final Map<Integer, ColorEnum> valeursParCouleur = getValeursCartesTrieesParCouleur(cartes);
 
 		int i = 1;
 		Entry<Integer, ColorEnum> valeurPrecedente = null;
-		boolean asCarteHaute = false;
+		boolean aUnAsMemeCouleur = false;
+		ColorEnum couleurQuinte = null;
 		for (final Entry<Integer, ColorEnum> v : valeursParCouleur.entrySet()) {
-			if (valeurPrecedente != null && (valeurPrecedente.getKey() + 1 == v.getKey()
-					|| valeurPrecedente.getKey() == CarteEnum.ROI.getValeur() && v.getKey() == CarteEnum.AS.getValeur())
-					&& valeurPrecedente.getValue() == v.getValue()) {
+			if ((valeurPrecedente != null) && ((v.getKey() > CarteEnum.DIX.getValeur()) && ((valeurPrecedente.getKey() + 1) == v.getKey()))
+					&& (valeurPrecedente.getValue() == v.getValue())) {
 				i++;
-				asCarteHaute = v.getKey() == CarteEnum.AS.getValeur();
+				couleurQuinte = v.getValue();
 			}
 			valeurPrecedente = v;
 		}
-		return i >= 5 && asCarteHaute;
+		for (final Entry<Integer, ColorEnum> e : valeursParCouleur.entrySet()) {
+			if ((e.getKey() == CarteEnum.AS.getValeur()) && (couleurQuinte == e.getValue())) {
+				aUnAsMemeCouleur = true;
+				break;
+			}
+		}
+		return (i >= 4) && aUnAsMemeCouleur;
 	}
 
-	public static boolean hasFullHouse(final List<Carte> cartes) {
+	public boolean hasFullHouse(final List<Carte> cartes) {
 
 		final List<Integer> valeurs = getValeursCartesTriees(cartes);
 		final Map<Integer, Integer> cartesIdentiques = getCartesIdentiques(valeurs);
@@ -235,7 +241,8 @@ public class CombinaisonUtil {
 
 		final List<Integer> valeursTriees = getValeursCartesTriees(cartes);
 
-		return CarteEnum.AS.getValeur() == Iterables.getFirst(valeursTriees, 0) ? CarteEnum.AS
+		return CarteEnum.AS.getValeur() == Iterables.getFirst(valeursTriees, 0)
+				? CarteEnum.AS
 				: CarteEnum.getCarteEnumByValeur(Iterables.getLast(valeursTriees));
 
 	}
