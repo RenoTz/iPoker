@@ -85,13 +85,14 @@ public class PokerApplication {
 		for (final Joueur joueur : joueurs) {
 			cartesJoueursPlusCartesVisibles.addAll(joueur.getCartes());
 			cartesJoueursPlusCartesVisibles.addAll(cartesVisibles);
-			final CarteCombinaison carteCombinaison = this.combinaisonUtil.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles);
+			final CarteCombinaison carteCombinaison = this.combinaisonUtil
+					.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles);
 			System.out.print("Main de " + joueur.getNom() + " : " + carteCombinaison.getCombinaison());
 
 			if (carteCombinaison.getCombinaison() == CombinaisonEnum.HAUTEUR) {
 				System.out.println(" " + carteCombinaison.getHauteur());
 			} else {
-				System.out.print(" de " + carteCombinaison.getCarte().name());
+				System.out.print(" de " + carteCombinaison.getCartes()[0].name());
 				System.out.println(" hauteur " + carteCombinaison.getHauteur());
 			}
 

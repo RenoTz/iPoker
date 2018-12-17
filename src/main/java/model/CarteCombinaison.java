@@ -2,27 +2,54 @@ package model;
 
 public class CarteCombinaison {
 
-	private CarteEnum carte;
+	private CarteEnum[] cartes;
 	private CarteEnum hauteur;
+	private ColorEnum couleur;
 	private CombinaisonEnum combinaison;
 
-	public CarteEnum getCarte() {
-		return this.carte;
+	public CarteCombinaison() {
+
+		this.cartes = new CarteEnum[2];
 	}
-	public void setCarte(final CarteEnum carte) {
-		this.carte = carte;
+
+	public CarteEnum[] getCartes() {
+
+		return this.cartes;
 	}
+
+	public void setCartes(final CarteEnum[] cartes) {
+
+		this.cartes = cartes;
+	}
+
 	public CombinaisonEnum getCombinaison() {
+
 		return this.combinaison;
 	}
+
 	public void setCombinaison(final CombinaisonEnum combinaison) {
+
 		this.combinaison = combinaison;
 	}
+
 	public CarteEnum getHauteur() {
-		return hauteur;
+
+		return this.hauteur;
 	}
+
 	public void setHauteur(CarteEnum hauteur) {
+
 		this.hauteur = hauteur;
+	}
+
+	public ColorEnum getCouleur() {
+
+		return this.couleur;
+	}
+
+	public void setCouleur(ColorEnum couleur) {
+
+		this.couleur = couleur;
 	}
 
 }
