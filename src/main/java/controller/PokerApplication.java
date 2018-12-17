@@ -1,5 +1,7 @@
 package controller;
 
+import static java.util.Objects.nonNull;
+
 import java.util.List;
 
 import com.google.common.collect.Iterables;
@@ -17,7 +19,7 @@ public class PokerApplication {
 
 	final CombinaisonUtil combinaisonUtil = new CombinaisonUtil();
 
-	public boolean run(final Setup setup) {
+	public void run(final Setup setup) {
 
 		// creation d'un joueur
 		final Joueur joueur = new Joueur("Renaud");
@@ -27,7 +29,9 @@ public class PokerApplication {
 		final List<Carte> jeuDeCartes = setup.creerJeuDeCartes();
 		final List<Carte> cartesVisibles = Lists.newArrayList();
 
-		while (!joueurs.stream().filter(j -> j.isWon()).anyMatch(j -> j.isWon())) {
+		Joueur gagnant = null;
+
+		while (joueurs.stream().filter(j -> j.isWon()).noneMatch(j -> j.isWon())) {
 
 			// PRE-FLOP
 			for (int i = 0; i < 2; i++) {
@@ -74,9 +78,15 @@ public class PokerApplication {
 			this.afficherMainDesJoueurs(joueurs, cartesVisibles);
 
 			// sortie du jeu
-			joueur.setWon(true);
+			gagnant = this.combinaisonUtil.determinerJoueurAvecLaMeilleureMain(joueurs, cartesVisibles);
+
 		}
-		return true;
+
+		if (nonNull(gagnant)) {
+			System.out.println(SEPARATEUR);
+			System.out.println(gagnant.getNom() + " a gagné");
+			System.out.println(SEPARATEUR);
+		}
 	}
 
 	private void afficherMainDesJoueurs(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
@@ -92,7 +102,12 @@ public class PokerApplication {
 			if (carteCombinaison.getCombinaison() == CombinaisonEnum.HAUTEUR) {
 				System.out.println(" " + carteCombinaison.getHauteur());
 			} else {
-				System.out.print(" de " + carteCombinaison.getCartes()[0].name());
+				if (nonNull(carteCombinaison.getCartes()[0])) {
+					System.out.print(" de " + carteCombinaison.getCartes()[0].name());
+					if (nonNull(carteCombinaison.getCartes()[1])) {
+						System.out.print(" et de " + carteCombinaison.getCartes()[1].name());
+					}
+				}
 				System.out.println(" hauteur " + carteCombinaison.getHauteur());
 			}
 

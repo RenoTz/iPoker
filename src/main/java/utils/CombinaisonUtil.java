@@ -1,5 +1,7 @@
 package utils;
 
+import static java.util.Objects.nonNull;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ import model.Joueur;
 
 public class CombinaisonUtil {
 
-	public Joueur getJoueurAvecLaMeilleureMain(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
+	public Joueur determinerJoueurAvecLaMeilleureMain(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
 
 		Joueur joueurAvecMeilleureMain = null;
 		final List<Carte> cartesJoueursPlusCartesVisibles = Lists.newArrayList();
@@ -34,6 +36,56 @@ public class CombinaisonUtil {
 				if (mainDuJoueur.getCombinaison().getValeur() > meilleureCombinaison.getCombinaison().getValeur()) {
 					meilleureCombinaison = mainDuJoueur;
 					joueurAvecMeilleureMain = joueur;
+				} else if (mainDuJoueur.getCombinaison().getValeur() == meilleureCombinaison.getCombinaison()
+						.getValeur()) {
+					CarteEnum carteDuJoueurEnCours = null;
+					CarteEnum carteDuJoueurAvecMeilleureMain = null;
+					switch (mainDuJoueur.getCombinaison()) {
+					case PAIRE:
+						carteDuJoueurEnCours = getCartePaire(cartesJoueursPlusCartesVisibles);
+						reinitialiserCartesJoueursPlusCartesVisibles(cartesVisibles, joueurAvecMeilleureMain,
+								cartesJoueursPlusCartesVisibles);
+						carteDuJoueurAvecMeilleureMain = getCartePaire(cartesJoueursPlusCartesVisibles);
+						break;
+					case BRELAN:
+						carteDuJoueurEnCours = getCarteBrelan(cartesJoueursPlusCartesVisibles);
+						reinitialiserCartesJoueursPlusCartesVisibles(cartesVisibles, joueurAvecMeilleureMain,
+								cartesJoueursPlusCartesVisibles);
+						carteDuJoueurAvecMeilleureMain = getCarteBrelan(cartesJoueursPlusCartesVisibles);
+						break;
+					case CARRE:
+						carteDuJoueurEnCours = getCarteCarre(cartesJoueursPlusCartesVisibles);
+						reinitialiserCartesJoueursPlusCartesVisibles(cartesVisibles, joueurAvecMeilleureMain,
+								cartesJoueursPlusCartesVisibles);
+						carteDuJoueurAvecMeilleureMain = getCarteCarre(cartesJoueursPlusCartesVisibles);
+						break;
+					default:
+					}
+					if (nonNull(carteDuJoueurEnCours) && nonNull(carteDuJoueurAvecMeilleureMain)) {
+						if (carteDuJoueurEnCours.getValeur() > carteDuJoueurAvecMeilleureMain.getValeur()) {
+							joueurAvecMeilleureMain = joueur;
+						} else if (carteDuJoueurEnCours.getValeur() == carteDuJoueurAvecMeilleureMain.getValeur()) {
+							final List<Integer> valeursCartesTrieesJoueurAvecMeilleureMain = getValeursCartesTriees(
+									cartesJoueursPlusCartesVisibles);
+							reinitialiserCartesJoueursPlusCartesVisibles(cartesVisibles, joueur,
+									cartesJoueursPlusCartesVisibles);
+							final List<Integer> valeursCartesTrieesJoueurEnCours = getValeursCartesTriees(
+									cartesJoueursPlusCartesVisibles);
+							final int valeurCarteJoueurMeilleureMain = carteDuJoueurAvecMeilleureMain.getValeur()
+									.intValue();
+							final int valeurCarteJoueurEnCours = carteDuJoueurEnCours.getValeur().intValue();
+							valeursCartesTrieesJoueurAvecMeilleureMain
+									.removeIf(c -> c.intValue() == valeurCarteJoueurMeilleureMain);
+							valeursCartesTrieesJoueurEnCours.removeIf(c -> c.intValue() == valeurCarteJoueurEnCours);
+							if ((Iterables.getLast(valeursCartesTrieesJoueurEnCours) > Iterables
+									.getLast(valeursCartesTrieesJoueurAvecMeilleureMain))
+									|| (valeursCartesTrieesJoueurEnCours.get(0) == CarteEnum.AS.getValeur()
+											&& valeursCartesTrieesJoueurAvecMeilleureMain.get(0) != CarteEnum.AS
+													.getValeur())) {
+								joueurAvecMeilleureMain = joueur;
+							}
+						}
+					}
 				}
 			} else {
 				meilleureCombinaison = mainDuJoueur;
@@ -41,7 +93,19 @@ public class CombinaisonUtil {
 			}
 			cartesJoueursPlusCartesVisibles.clear();
 		}
+
+		if (nonNull(joueurAvecMeilleureMain)) {
+			joueurAvecMeilleureMain.setWon(true);
+		}
 		return joueurAvecMeilleureMain;
+	}
+
+	private static void reinitialiserCartesJoueursPlusCartesVisibles(final List<Carte> cartesVisibles,
+			Joueur joueurAvecMeilleureMain, final List<Carte> cartesJoueursPlusCartesVisibles) {
+
+		cartesJoueursPlusCartesVisibles.clear();
+		cartesJoueursPlusCartesVisibles.addAll(joueurAvecMeilleureMain.getCartes());
+		cartesJoueursPlusCartesVisibles.addAll(cartesVisibles);
 	}
 
 	public CarteCombinaison getMeilleureCombinaison(final List<Carte> cartes) {
