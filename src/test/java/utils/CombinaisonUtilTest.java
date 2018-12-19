@@ -31,7 +31,7 @@ public class CombinaisonUtilTest {
 		final Carte quatrePique = new Carte(CarteEnum.QUATRE, ColorEnum.PIQUE);
 		final List<Carte> cartes = Lists.newArrayList(deuxCarreau, asCarreau, asCoeur, troisPique, quatrePique);
 
-		final boolean paire = this.combinaisonUtil.hasPaire(cartes);
+		final boolean paire = this.combinaisonUtil.hasPaire(cartes, Lists.newArrayList());
 
 		assertTrue(paire);
 
@@ -47,7 +47,7 @@ public class CombinaisonUtilTest {
 		final Carte troisPique = new Carte(CarteEnum.TROIS, ColorEnum.PIQUE);
 		final List<Carte> cartes = Lists.newArrayList(deuxCarreau, asCarreau, asCoeur, deuxPique, troisPique);
 
-		final boolean doublePaire = this.combinaisonUtil.hasDoublePaire(cartes);
+		final boolean doublePaire = this.combinaisonUtil.hasDoublePaire(cartes, Lists.newArrayList());
 
 		assertTrue(doublePaire);
 
@@ -63,7 +63,7 @@ public class CombinaisonUtilTest {
 		final Carte asPique = new Carte(CarteEnum.AS, ColorEnum.PIQUE);
 		final List<Carte> cartes = Lists.newArrayList(deuxCarreau, asCarreau, asCoeur, deuxPique, asPique);
 
-		final boolean brelan = this.combinaisonUtil.hasBrelan(cartes);
+		final boolean brelan = this.combinaisonUtil.hasBrelan(cartes, Lists.newArrayList());
 
 		assertTrue(brelan);
 
@@ -81,7 +81,7 @@ public class CombinaisonUtilTest {
 		final List<Carte> cartes = Lists.newArrayList(asTrefle, asCarreau, asCoeur, deuxPique, asPique);
 
 		// Act
-		final boolean carre = this.combinaisonUtil.hasCarre(cartes);
+		final boolean carre = this.combinaisonUtil.hasCarre(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(carre);
@@ -99,7 +99,7 @@ public class CombinaisonUtilTest {
 		final List<Carte> cartes = Lists.newArrayList(asTrefle, asCarreau, asCoeur, deuxPique, deuxCarreau);
 
 		// Act
-		final boolean full = this.combinaisonUtil.hasFullHouse(cartes);
+		final boolean full = this.combinaisonUtil.hasFullHouse(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(full);
@@ -117,7 +117,7 @@ public class CombinaisonUtilTest {
 		final List<Carte> cartes = Lists.newArrayList(asTrefle, troisTrefle, valetTrefle, roiTrefle, septTrefle);
 
 		// Act
-		final boolean couleur = this.combinaisonUtil.hasCouleur(cartes);
+		final boolean couleur = this.combinaisonUtil.hasCouleur(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(couleur);
@@ -135,7 +135,7 @@ public class CombinaisonUtilTest {
 		final List<Carte> cartes = Lists.newArrayList(septPique, huitTrefle, dixPique, neufCoeur, valetCarreau);
 
 		// Act
-		final boolean quinte = this.combinaisonUtil.hasQuinte(cartes);
+		final boolean quinte = this.combinaisonUtil.hasQuinte(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(quinte);
@@ -153,7 +153,7 @@ public class CombinaisonUtilTest {
 		final List<Carte> cartes = Lists.newArrayList(septPique, huitPique, dixPique, neufPique, valetPique);
 
 		// Act
-		final boolean quinteFlush = this.combinaisonUtil.hasQuinteFlush(cartes);
+		final boolean quinteFlush = this.combinaisonUtil.hasQuinteFlush(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(quinteFlush);
@@ -169,10 +169,11 @@ public class CombinaisonUtilTest {
 		final Carte huitCoeur = new Carte(CarteEnum.HUIT, ColorEnum.COEUR);
 		final Carte roiTrefle = new Carte(CarteEnum.ROI, ColorEnum.TREFLE);
 		final Carte dixTrefle = new Carte(CarteEnum.DIX, ColorEnum.TREFLE);
-		final List<Carte> cartes = Lists.newArrayList(asTrefle, dameTrefle, valetTrefle, huitCoeur, roiTrefle, dixTrefle);
+		final List<Carte> cartes = Lists.newArrayList(asTrefle, dameTrefle, valetTrefle, huitCoeur, roiTrefle,
+				dixTrefle);
 
 		// Act
-		final boolean quinteFlushRoyale = this.combinaisonUtil.hasQuinteFlushRoyale(cartes);
+		final boolean quinteFlushRoyale = this.combinaisonUtil.hasQuinteFlushRoyale(cartes, Lists.newArrayList());
 
 		// Assert
 		assertTrue(quinteFlushRoyale);

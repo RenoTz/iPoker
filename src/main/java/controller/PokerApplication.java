@@ -35,7 +35,6 @@ public class PokerApplication {
 
 			// PRE-FLOP
 			for (int i = 0; i < 2; i++) {
-
 				for (final Joueur j : joueurs) {
 					j.getCartes().add(Iterables.getLast(jeuDeCartes));
 					jeuDeCartes.remove(jeuDeCartes.size() - 1);
@@ -91,12 +90,9 @@ public class PokerApplication {
 
 	private void afficherMainDesJoueurs(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
 
-		final List<Carte> cartesJoueursPlusCartesVisibles = Lists.newArrayList();
 		for (final Joueur joueur : joueurs) {
-			cartesJoueursPlusCartesVisibles.addAll(joueur.getCartes());
-			cartesJoueursPlusCartesVisibles.addAll(cartesVisibles);
-			final CarteCombinaison carteCombinaison = this.combinaisonUtil
-					.getMeilleureCombinaison(cartesJoueursPlusCartesVisibles);
+			final CarteCombinaison carteCombinaison = this.combinaisonUtil.getMeilleureCombinaison(joueur.getCartes(),
+					cartesVisibles);
 			System.out.print("Main de " + joueur.getNom() + " : " + carteCombinaison.getCombinaison());
 
 			if (carteCombinaison.getCombinaison() == CombinaisonEnum.HAUTEUR) {
@@ -110,8 +106,6 @@ public class PokerApplication {
 				}
 				System.out.println(" hauteur " + carteCombinaison.getHauteur());
 			}
-
-			cartesJoueursPlusCartesVisibles.clear();
 		}
 	}
 
