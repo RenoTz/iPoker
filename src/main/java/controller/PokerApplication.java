@@ -36,7 +36,11 @@ public class PokerApplication {
 		final int smallBlind = 10;
 		int bigBling = smallBlind * 2;
 
+		int placeDonneur = 0;
+
 		while (isPlusDUnJoueurAvecJetons(joueurs)) {
+
+			placeDonneur = this.definirDealer(joueurs, placeDonneur);
 
 			this.reinitialiserLesCartesEtMainsDesJoueurs(setup, joueurs, jeuDeCartes, cartesVisibles);
 
@@ -129,12 +133,30 @@ public class PokerApplication {
 			tour++;
 
 		}
+
 		final Joueur gagnantDuGame = joueurs.stream().filter(j -> j.getJetons() > 0).collect(Collectors.toList())
 				.get(0);
 		System.out.println(SEPARATEUR);
 		System.out.println(gagnantDuGame.getNom() + " a remporté la partie.");
 		System.out.println(SEPARATEUR);
 
+	}
+
+	private int definirDealer(final List<Joueur> joueurs, int placeDonneur) {
+
+		for (final Joueur j : joueurs) {
+			j.setDealer(false);
+			if (joueurs.indexOf(j) == placeDonneur) {
+				j.setDealer(true);
+			}
+		}
+
+		if (placeDonneur == joueurs.size() - 1) {
+			placeDonneur = 0;
+		} else {
+			placeDonneur++;
+		}
+		return placeDonneur;
 	}
 
 	private void reinitialiserLesCartesEtMainsDesJoueurs(final Setup setup, final List<Joueur> joueurs,

@@ -12,6 +12,7 @@ public class Joueur {
 	private CarteCombinaison carteCombinaison;
 	private boolean dealer;
 	private boolean won;
+	private ActionJoueurEnum actionJoueur;
 
 	public Joueur(final String nom) {
 
@@ -19,6 +20,8 @@ public class Joueur {
 		this.cartes = Lists.newArrayList();
 		// cave initiale
 		this.jetons = 2000;
+		// etat initial
+		this.actionJoueur = ActionJoueurEnum.EN_ATTENTE;
 	}
 
 	public String getNom() {
@@ -92,6 +95,16 @@ public class Joueur {
 
 		this.setJetons(this.getJetons() + pot);
 
+	}
+
+	public ActionJoueurEnum getActionJoueur() {
+
+		return this.actionJoueur;
+	}
+
+	public void setActionJoueur(ActionJoueurEnum actionJoueur) {
+
+		this.actionJoueur = actionJoueur;
 	}
 
 }
