@@ -8,13 +8,17 @@ public class Joueur {
 
 	private String nom;
 	private List<Carte> cartes;
+	private int jetons;
 	private CarteCombinaison carteCombinaison;
+	private boolean dealer;
 	private boolean won;
 
 	public Joueur(final String nom) {
 
 		this.nom = nom;
 		this.cartes = Lists.newArrayList();
+		// cave initiale
+		this.jetons = 2000;
 	}
 
 	public String getNom() {
@@ -22,7 +26,7 @@ public class Joueur {
 		return this.nom;
 	}
 
-	public void setNom(String nom) {
+	public void setNom(final String nom) {
 
 		this.nom = nom;
 	}
@@ -32,7 +36,7 @@ public class Joueur {
 		return this.cartes;
 	}
 
-	public void setCartes(List<Carte> cartes) {
+	public void setCartes(final List<Carte> cartes) {
 
 		this.cartes = cartes;
 	}
@@ -42,7 +46,7 @@ public class Joueur {
 		return this.won;
 	}
 
-	public void setWon(boolean won) {
+	public void setWon(final boolean won) {
 
 		this.won = won;
 	}
@@ -52,9 +56,42 @@ public class Joueur {
 		return this.carteCombinaison;
 	}
 
-	public void setCarteCombinaison(CarteCombinaison combinaison) {
+	public void setCarteCombinaison(final CarteCombinaison combinaison) {
 
 		this.carteCombinaison = combinaison;
+	}
+
+	public int getJetons() {
+
+		return this.jetons;
+	}
+
+	public void setJetons(final int jetons) {
+
+		this.jetons = jetons;
+	}
+
+	public int miser(final int mise) {
+
+		this.jetons -= mise;
+		return mise;
+
+	}
+
+	public boolean isDealer() {
+
+		return this.dealer;
+	}
+
+	public void setDealer(boolean dealer) {
+
+		this.dealer = dealer;
+	}
+
+	public void recupererLePot(int pot) {
+
+		this.setJetons(this.getJetons() + pot);
+
 	}
 
 }

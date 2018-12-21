@@ -145,7 +145,7 @@ public class CombinaisonUtil {
 		if (valeurs.contains(CarteEnum.AS.getValeur())) {
 			return CarteEnum.AS;
 		}
-		return CarteEnum.getCarteEnumByValeur(Iterables.getLast(valeurs));
+		return !valeurs.isEmpty() ? CarteEnum.getCarteEnumByValeur(Iterables.getLast(valeurs)) : null;
 	}
 
 	public boolean hasPaire(final List<Carte> cartesJoueur, final List<Carte> cartesVisibles) {
