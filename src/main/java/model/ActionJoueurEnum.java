@@ -2,44 +2,25 @@ package model;
 
 public enum ActionJoueurEnum {
 
-	EN_ATTENTE() {
+	ATTENDRE() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
-
-			return JOUER;
-		}
-
-	},
-
-	JOUER() {
-
-		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
 			switch (action) {
 			case CHECKER:
-				if (!premierJoueur) {
-					return CHECKER;
-				} else {
-					throw new IllegalArgumentException("Il n'est pas permis au premier joueur de + " + action);
-				}
+				return CHECKER;
 			case SUIVRE:
 				return SUIVRE;
 			case RELANCER:
 				return RELANCER;
 			case SURRELANCER:
-				if (!premierJoueur) {
-					return SURRELANCER;
-				} else {
-					throw new IllegalArgumentException("Il n'est pas permis au premier joueur de + " + action);
-				}
+				return SURRELANCER;
 			case PASSER:
 				return PASSER;
 			default:
-				break;
+				throw new IllegalArgumentException();
 			}
-			return null;
 		}
 
 	},
@@ -47,9 +28,9 @@ public enum ActionJoueurEnum {
 	CHECKER() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
-			return EN_ATTENTE;
+			return ATTENDRE;
 		}
 
 	},
@@ -57,9 +38,9 @@ public enum ActionJoueurEnum {
 	SUIVRE() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
-			return EN_ATTENTE;
+			return ATTENDRE;
 		}
 
 	},
@@ -67,9 +48,9 @@ public enum ActionJoueurEnum {
 	RELANCER() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
-			return EN_ATTENTE;
+			return ATTENDRE;
 		}
 
 	},
@@ -77,9 +58,9 @@ public enum ActionJoueurEnum {
 	SURRELANCER() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
-			return EN_ATTENTE;
+			return ATTENDRE;
 		}
 
 	},
@@ -87,7 +68,7 @@ public enum ActionJoueurEnum {
 	PASSER() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
 			return A_TERMINER_DE_JOUER;
 		}
@@ -97,12 +78,12 @@ public enum ActionJoueurEnum {
 	A_TERMINER_DE_JOUER() {
 
 		@Override
-		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur) {
+		public ActionJoueurEnum actionSuivante(ActionJoueurEnum action) {
 
 			return null;
 		}
 
 	};
 
-	public abstract ActionJoueurEnum actionSuivante(ActionJoueurEnum action, boolean premierJoueur);
+	public abstract ActionJoueurEnum actionSuivante(ActionJoueurEnum action);
 }

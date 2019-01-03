@@ -4,24 +4,35 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
+import controller.decision.InterfaceDecision;
+
 public class Joueur {
 
 	private String nom;
 	private List<Carte> cartes;
 	private int jetons;
 	private CarteCombinaison carteCombinaison;
-	private boolean dealer;
-	private boolean won;
-	private ActionJoueurEnum actionJoueur;
+	private boolean doitJouer;
+	private ActionJoueurEnum action;
 
-	public Joueur(final String nom) {
+	private final InterfaceDecision decision;
+
+	public Joueur(final String nom, final InterfaceDecision decision) {
 
 		this.nom = nom;
 		this.cartes = Lists.newArrayList();
 		// cave initiale
 		this.jetons = 2000;
 		// etat initial
-		this.actionJoueur = ActionJoueurEnum.EN_ATTENTE;
+		this.action = ActionJoueurEnum.ATTENDRE;
+		// init du niveau de décision
+		this.decision = decision;
+	}
+
+	public void decider(final ActionJoueurEnum actionPrecedente, final List<Carte> cartesVisibles,
+			final Partie partie) {
+
+		this.decision.decider(this, actionPrecedente, cartesVisibles, partie);
 	}
 
 	public String getNom() {
@@ -44,16 +55,6 @@ public class Joueur {
 		this.cartes = cartes;
 	}
 
-	public boolean isWon() {
-
-		return this.won;
-	}
-
-	public void setWon(final boolean won) {
-
-		this.won = won;
-	}
-
 	public CarteCombinaison getCarteCombinaison() {
 
 		return this.carteCombinaison;
@@ -74,37 +75,30 @@ public class Joueur {
 		this.jetons = jetons;
 	}
 
-	public int miser(final int mise) {
-
-		this.jetons -= mise;
-		return mise;
-
-	}
-
-	public boolean isDealer() {
-
-		return this.dealer;
-	}
-
-	public void setDealer(boolean dealer) {
-
-		this.dealer = dealer;
-	}
-
 	public void recupererLePot(int pot) {
 
 		this.setJetons(this.getJetons() + pot);
 
 	}
 
-	public ActionJoueurEnum getActionJoueur() {
+	public ActionJoueurEnum getAction() {
 
-		return this.actionJoueur;
+		return this.action;
 	}
 
-	public void setActionJoueur(ActionJoueurEnum actionJoueur) {
+	public void setAction(ActionJoueurEnum action) {
 
-		this.actionJoueur = actionJoueur;
+		this.action = action;
+	}
+
+	public boolean doitJouer() {
+
+		return this.doitJouer;
+	}
+
+	public void setDoitJouer(boolean doitJouer) {
+
+		this.doitJouer = doitJouer;
 	}
 
 }

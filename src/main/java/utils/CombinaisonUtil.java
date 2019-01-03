@@ -1,7 +1,5 @@
 package utils;
 
-import static java.util.Objects.nonNull;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -73,9 +71,6 @@ public class CombinaisonUtil {
 			}
 		}
 
-		if (nonNull(joueurAvecMeilleureMain)) {
-			joueurAvecMeilleureMain.setWon(true);
-		}
 		return joueurAvecMeilleureMain;
 	}
 
