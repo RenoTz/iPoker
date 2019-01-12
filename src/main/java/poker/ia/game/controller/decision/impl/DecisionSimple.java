@@ -1,14 +1,15 @@
-package controller.decision;
+package poker.ia.game.controller.decision.impl;
 
 import static java.util.Objects.nonNull;
 
 import java.util.List;
 
-import model.ActionJoueurEnum;
-import model.Carte;
-import model.CombinaisonEnum;
-import model.Joueur;
-import model.Partie;
+import poker.ia.game.controller.decision.InterfaceDecision;
+import poker.ia.game.model.ActionJoueurEnum;
+import poker.ia.game.model.Carte;
+import poker.ia.game.model.CombinaisonEnum;
+import poker.ia.game.model.Joueur;
+import poker.ia.game.model.Partie;
 
 public class DecisionSimple implements InterfaceDecision {
 
@@ -17,22 +18,22 @@ public class DecisionSimple implements InterfaceDecision {
 			final Partie partie) {
 
 		switch (actionPrecedente) {
-		case RELANCER:
-			this.suivreOuRelancerOuPasser(partie, joueur);
-			break;
-		case SURRELANCER:
-			this.suivreOuPasser(joueur);
-			break;
-		case CHECKER:
-			this.checkerOuRelancer(partie, joueur);
-			break;
-		case SUIVRE:
-			this.checkerOuSuivreOuRelancerOuPasser(partie, joueur);
-			break;
-		case ATTENDRE:
-			this.checkerOuRelancer(partie, joueur);
-			break;
-		default:
+			case RELANCER :
+				this.suivreOuRelancerOuPasser(partie, joueur);
+				break;
+			case SURRELANCER :
+				this.suivreOuPasser(joueur);
+				break;
+			case CHECKER :
+				this.checkerOuRelancer(partie, joueur);
+				break;
+			case SUIVRE :
+				this.checkerOuSuivreOuRelancerOuPasser(partie, joueur);
+				break;
+			case ATTENDRE :
+				this.checkerOuRelancer(partie, joueur);
+				break;
+			default :
 
 		}
 
@@ -40,7 +41,7 @@ public class DecisionSimple implements InterfaceDecision {
 
 	private void checkerOuSuivreOuRelancerOuPasser(final Partie partie, final Joueur joueur) {
 
-		if (partie.getRelanceRestante() > 0 && nonNull(joueur.getCarteCombinaison().getCombinaison())) {
+		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())) {
 			if (joueur.getCarteCombinaison().getCombinaison().getValeur() > 3) {
 				this.relancer(partie, joueur);
 			} else if (joueur.getAction() == ActionJoueurEnum.SUIVRE) {
@@ -64,8 +65,8 @@ public class DecisionSimple implements InterfaceDecision {
 
 	private void suivreOuRelancerOuPasser(final Partie partie, final Joueur joueur) {
 
-		if (partie.getRelanceRestante() > 0 && nonNull(joueur.getCarteCombinaison().getCombinaison())
-				&& joueur.getCarteCombinaison().getCombinaison().getValeur() > 2) {
+		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())
+				&& (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2)) {
 			this.relancer(partie, joueur);
 		} else if (joueur.getCarteCombinaison().getCombinaison() != CombinaisonEnum.HAUTEUR) {
 			this.suivre(joueur);
@@ -76,8 +77,8 @@ public class DecisionSimple implements InterfaceDecision {
 
 	private void checkerOuRelancer(final Partie partie, final Joueur joueur) {
 
-		if (partie.getRelanceRestante() > 0 && nonNull(joueur.getCarteCombinaison().getCombinaison())
-				&& joueur.getCarteCombinaison().getCombinaison().getValeur() > 2) {
+		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())
+				&& (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2)) {
 			this.relancer(partie, joueur);
 		} else {
 			this.checker(joueur);

@@ -11,15 +11,16 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.google.common.collect.Lists;
 
-import model.Carte;
-import model.CarteEnum;
-import model.ColorEnum;
+import poker.ia.game.model.Carte;
+import poker.ia.game.model.CarteEnum;
+import poker.ia.game.model.ColorEnum;
+import poker.ia.game.services.CombinaisonService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CombinaisonUtilTest {
 
 	@InjectMocks
-	private CombinaisonUtil combinaisonUtil;
+	private CombinaisonService combinaisonUtil;
 
 	@Test
 	public void test_aUnePaire() throws Exception {
@@ -169,8 +170,7 @@ public class CombinaisonUtilTest {
 		final Carte huitCoeur = new Carte(CarteEnum.HUIT, ColorEnum.COEUR);
 		final Carte roiTrefle = new Carte(CarteEnum.ROI, ColorEnum.TREFLE);
 		final Carte dixTrefle = new Carte(CarteEnum.DIX, ColorEnum.TREFLE);
-		final List<Carte> cartes = Lists.newArrayList(asTrefle, dameTrefle, valetTrefle, huitCoeur, roiTrefle,
-				dixTrefle);
+		final List<Carte> cartes = Lists.newArrayList(asTrefle, dameTrefle, valetTrefle, huitCoeur, roiTrefle, dixTrefle);
 
 		// Act
 		final boolean quinteFlushRoyale = this.combinaisonUtil.hasQuinteFlushRoyale(cartes, Lists.newArrayList());

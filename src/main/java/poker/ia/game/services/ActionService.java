@@ -1,9 +1,9 @@
-package controller;
+package poker.ia.game.services;
 
-import model.Joueur;
-import model.Partie;
+import poker.ia.game.model.Joueur;
+import poker.ia.game.model.Partie;
 
-public class ServiceAction {
+public class ActionService {
 
 	public void miser(final Partie partie, final Joueur joueur, final int mise) {
 

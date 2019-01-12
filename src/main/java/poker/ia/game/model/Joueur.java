@@ -1,10 +1,10 @@
-package model;
+package poker.ia.game.model;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import controller.decision.InterfaceDecision;
+import poker.ia.game.controller.decision.InterfaceDecision;
 
 public class Joueur {
 

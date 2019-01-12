@@ -1,13 +1,13 @@
-package controller;
+package poker.ia.game.controller;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import model.Carte;
-import model.CarteEnum;
-import model.ColorEnum;
-import utils.CarteUtils;
+import poker.ia.game.model.Carte;
+import poker.ia.game.model.CarteEnum;
+import poker.ia.game.model.ColorEnum;
+import poker.ia.game.utils.CarteUtils;
 
 public class Setup {
 

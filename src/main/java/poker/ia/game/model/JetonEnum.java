@@ -1,4 +1,4 @@
-package model;
+package poker.ia.game.model;
 
 public enum JetonEnum {
 

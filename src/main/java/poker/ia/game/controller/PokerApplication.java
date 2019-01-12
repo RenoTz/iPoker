@@ -1,4 +1,4 @@
-package controller;
+package poker.ia.game.controller;
 
 import static java.util.Objects.nonNull;
 
@@ -9,14 +9,15 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import controller.decision.DecisionSimple;
-import model.ActionJoueurEnum;
-import model.Carte;
-import model.CarteCombinaison;
-import model.CombinaisonEnum;
-import model.Joueur;
-import model.Partie;
-import utils.CombinaisonUtil;
+import poker.ia.game.controller.decision.impl.DecisionSimple;
+import poker.ia.game.model.ActionJoueurEnum;
+import poker.ia.game.model.Carte;
+import poker.ia.game.model.CarteCombinaison;
+import poker.ia.game.model.CombinaisonEnum;
+import poker.ia.game.model.Joueur;
+import poker.ia.game.model.Partie;
+import poker.ia.game.services.ActionService;
+import poker.ia.game.services.CombinaisonService;
 
 public class PokerApplication {
 
@@ -24,8 +25,8 @@ public class PokerApplication {
 
 	private static final String AFFICHAGE_JETONS_JOUEUR = "%s a misé %d jetons. Il reste %d jetons\n";
 
-	final CombinaisonUtil combinaisonUtil = new CombinaisonUtil();
-	final ServiceAction serviceAction = new ServiceAction();
+	final CombinaisonService combinaisonUtil = new CombinaisonService();
+	final ActionService serviceAction = new ActionService();
 
 	public void run(final Setup setup) {
 
@@ -67,7 +68,8 @@ public class PokerApplication {
 				}
 			}
 
-			// definir le premier joueur (reordonner la liste des joueurs en fonction)
+			// definir le premier joueur (reordonner la liste des joueurs en
+			// fonction)
 			this.ordonnerJoueursAPArtirDuPremierJoueur(joueurs, partie);
 			// small bling / big blind
 			this.poserSmallBlingEtBigBlind(joueurs, partie);
@@ -132,8 +134,7 @@ public class PokerApplication {
 			this.affichagePot(partie.getPot());
 
 			// sortie du jeu
-			final Joueur gagnantDuPot = this.combinaisonUtil.determinerJoueurAvecLaMeilleureMain(joueurs,
-					cartesVisibles);
+			final Joueur gagnantDuPot = this.combinaisonUtil.determinerJoueurAvecLaMeilleureMain(joueurs, cartesVisibles);
 
 			if (nonNull(gagnantDuPot)) {
 				System.out.println(SEPARATEUR);
@@ -147,15 +148,14 @@ public class PokerApplication {
 
 		}
 
-		final Joueur gagnantDuGame = joueurs.stream().filter(j -> j.getJetons() > 0).collect(Collectors.toList())
-				.get(0);
+		final Joueur gagnantDuGame = joueurs.stream().filter(j -> j.getJetons() > 0).collect(Collectors.toList()).get(0);
 		System.out.println(SEPARATEUR);
 		System.out.println(gagnantDuGame.getNom() + " a remporté la partie.");
 		System.out.println(SEPARATEUR);
 
 	}
 
-	private void poserSmallBlingEtBigBlind(List<Joueur> joueurs, Partie partie) {
+	private void poserSmallBlingEtBigBlind(final List<Joueur> joueurs, final Partie partie) {
 
 		// poser la small blind / big blind
 		this.serviceAction.miser(partie, joueurs.get(0), partie.getSmallBlind());
@@ -169,10 +169,10 @@ public class PokerApplication {
 		joueurs.get(indexJoueurSuivant).setDoitJouer(true);
 	}
 
-	private void ordonnerJoueursAPArtirDuPremierJoueur(List<Joueur> joueurs, Partie partie) {
+	private void ordonnerJoueursAPArtirDuPremierJoueur(final List<Joueur> joueurs, final Partie partie) {
 
 		final int indexDealer = joueurs.indexOf(partie.getDealer());
-		final int indexPremierJoueur = indexDealer < joueurs.size() - 1 ? indexDealer + 1 : 0;
+		final int indexPremierJoueur = indexDealer < (joueurs.size() - 1) ? indexDealer + 1 : 0;
 
 		// definir le premier joueur
 		joueurs.forEach(j -> j.setDoitJouer(false));
@@ -196,13 +196,13 @@ public class PokerApplication {
 
 	private void definirDealer(final List<Joueur> joueurs, final Partie partie) {
 
-		partie.setDealer(nonNull(partie.getDealer()) && joueurs.indexOf(partie.getDealer()) < joueurs.size() - 1
+		partie.setDealer(nonNull(partie.getDealer()) && (joueurs.indexOf(partie.getDealer()) < (joueurs.size() - 1))
 				? joueurs.get(joueurs.indexOf(partie.getDealer()) + 1)
 				: joueurs.get(0));
 	}
 
-	private void reinitialiserLesCartesEtMainsDesJoueurs(final Setup setup, final List<Joueur> joueurs,
-			final List<Carte> jeuDeCartes, List<Carte> cartesVisibles) {
+	private void reinitialiserLesCartesEtMainsDesJoueurs(final Setup setup, final List<Joueur> joueurs, final List<Carte> jeuDeCartes,
+			final List<Carte> cartesVisibles) {
 
 		cartesVisibles.clear();
 		jeuDeCartes.clear();
@@ -213,7 +213,7 @@ public class PokerApplication {
 		});
 	}
 
-	private void affichagePot(int pot) {
+	private void affichagePot(final int pot) {
 
 		System.out.println(SEPARATEUR);
 		System.out.println("Total du pot : " + pot);
@@ -238,15 +238,14 @@ public class PokerApplication {
 
 			joueurQuiDoitJouer.decider(actionPrecedente, cartesVisibles, partie);
 			System.out.println(joueurQuiDoitJouer.getNom() + " a choisi de " + joueurQuiDoitJouer.getAction());
-			if (joueurQuiDoitJouer.getJetons() >= partie.getBigBlind()
-					&& (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SUIVRE
-							|| joueurQuiDoitJouer.getAction() == ActionJoueurEnum.RELANCER)) {
+			if ((joueurQuiDoitJouer.getJetons() >= partie.getBigBlind()) && ((joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SUIVRE)
+					|| (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.RELANCER))) {
 				this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind());
 				System.out.println(SEPARATEUR);
 				System.out.format(AFFICHAGE_JETONS_JOUEUR, joueurQuiDoitJouer.getNom(), partie.getBigBlind(),
 						joueurQuiDoitJouer.getJetons());
 				System.out.println(SEPARATEUR);
-			} else if (joueurQuiDoitJouer.getJetons() >= partie.getBigBlind() * 2
+			} else if ((joueurQuiDoitJouer.getJetons() >= (partie.getBigBlind() * 2))
 					&& (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SURRELANCER)) {
 				this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind() * 2);
 				System.out.println(SEPARATEUR);
@@ -259,7 +258,7 @@ public class PokerApplication {
 				System.out.println(SEPARATEUR);
 			}
 			joueurQuiDoitJouer.setDoitJouer(false);
-			final int indexJoueurSuivant = joueurs.indexOf(joueurQuiDoitJouer) < joueurs.size() - 1
+			final int indexJoueurSuivant = joueurs.indexOf(joueurQuiDoitJouer) < (joueurs.size() - 1)
 					? joueurs.indexOf(joueurQuiDoitJouer) + 1
 					: 0;
 			joueurs.get(indexJoueurSuivant).setDoitJouer(true);
@@ -276,7 +275,7 @@ public class PokerApplication {
 		return totalDesMises;
 	}
 
-	private void pause(long seconde) {
+	private void pause(final long seconde) {
 
 		try {
 			Thread.sleep(seconde * 1000);
@@ -285,7 +284,7 @@ public class PokerApplication {
 		}
 	}
 
-	private static boolean isPlusDUnJoueurAvecJetons(List<Joueur> joueurs) {
+	private static boolean isPlusDUnJoueurAvecJetons(final List<Joueur> joueurs) {
 
 		return joueurs.stream().filter(j -> j.getJetons() > 0).collect(Collectors.toList()).size() > 1;
 	}
@@ -293,8 +292,7 @@ public class PokerApplication {
 	private void afficherMainDesJoueurs(final List<Joueur> joueurs, final List<Carte> cartesVisibles) {
 
 		for (final Joueur joueur : joueurs) {
-			final CarteCombinaison carteCombinaison = this.combinaisonUtil.getMeilleureCombinaison(joueur.getCartes(),
-					cartesVisibles);
+			final CarteCombinaison carteCombinaison = this.combinaisonUtil.getMeilleureCombinaison(joueur.getCartes(), cartesVisibles);
 			System.out.print("Main de " + joueur.getNom() + " : " + carteCombinaison.getCombinaison());
 
 			if (carteCombinaison.getCombinaison() == CombinaisonEnum.HAUTEUR) {
