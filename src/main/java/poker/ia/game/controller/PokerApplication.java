@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
@@ -21,17 +24,17 @@ import poker.ia.game.services.CombinaisonService;
 
 public class PokerApplication {
 
-	private static final String SEPARATEUR = "-----------------------------------";
+	private static final Logger LOGGER = LoggerFactory.getLogger(PokerApplication.class);
 
-	private static final String AFFICHAGE_JETONS_JOUEUR = "%s a misé %d jetons. Il reste %d jetons\n";
+	private static final String SEPARATEUR = "----------------------------------";
 
 	final CombinaisonService combinaisonUtil = new CombinaisonService();
 	final ActionService serviceAction = new ActionService();
 
 	public void run(final Setup setup) {
 
-		// creation d'un joueur
 		final Partie partie = new Partie();
+		// creation des joueurs
 		final Joueur renaud = new Joueur("Renaud", new DecisionSimple());
 		final Joueur gilbert = new Joueur("Gilbert", new DecisionSimple());
 		final Joueur philippe = new Joueur("Philippe", new DecisionSimple());
@@ -58,14 +61,14 @@ public class PokerApplication {
 			}
 
 			// PRE-FLOP
-			System.out.println(SEPARATEUR);
-			System.out.println("------- PRE-FLOP --------");
-			System.out.println(SEPARATEUR);
+			LOGGER.info(SEPARATEUR);
+			LOGGER.info("------------ PRE-FLOP ------------");
+			LOGGER.info(SEPARATEUR);
 			for (int i = 0; i < 2; i++) {
-				for (final Joueur j : joueurs) {
+				joueurs.forEach(j -> {
 					j.getCartes().add(Iterables.getLast(jeuDeCartes));
-					jeuDeCartes.remove(jeuDeCartes.size() - 1);
-				}
+					jeuDeCartes.remove(Iterables.getLast(jeuDeCartes));
+				});
 			}
 
 			// definir le premier joueur (reordonner la liste des joueurs en
@@ -84,12 +87,12 @@ public class PokerApplication {
 			this.affichagePot(partie.getPot());
 
 			// FLOP
-			System.out.println(SEPARATEUR);
-			System.out.println("------- Le FLOP --------");
-			System.out.println(SEPARATEUR);
+			LOGGER.info(SEPARATEUR);
+			LOGGER.info("------- Le FLOP --------");
+			LOGGER.info(SEPARATEUR);
 			for (int i = 0; i < 3; i++) {
 				cartesVisibles.add(Iterables.getLast(jeuDeCartes));
-				jeuDeCartes.remove(jeuDeCartes.size() - 1);
+				jeuDeCartes.remove(Iterables.getLast(jeuDeCartes));
 			}
 
 			// affichage des cartes et des mains des joueurs
@@ -102,9 +105,9 @@ public class PokerApplication {
 			this.affichagePot(partie.getPot());
 
 			// TURN
-			System.out.println(SEPARATEUR);
-			System.out.println("------- La TURN --------");
-			System.out.println(SEPARATEUR);
+			LOGGER.info(SEPARATEUR);
+			LOGGER.info("------- La TURN --------");
+			LOGGER.info(SEPARATEUR);
 			cartesVisibles.add(Iterables.getLast(jeuDeCartes));
 			jeuDeCartes.remove(jeuDeCartes.size() - 1);
 
@@ -118,9 +121,9 @@ public class PokerApplication {
 			this.affichagePot(partie.getPot());
 
 			// RIVIERE
-			System.out.println(SEPARATEUR);
-			System.out.println("------- La RIVIERE --------");
-			System.out.println(SEPARATEUR);
+			LOGGER.info(SEPARATEUR);
+			LOGGER.info("------- La RIVIERE --------");
+			LOGGER.info(SEPARATEUR);
 			cartesVisibles.add(Iterables.getLast(jeuDeCartes));
 			jeuDeCartes.remove(jeuDeCartes.size() - 1);
 
@@ -137,9 +140,9 @@ public class PokerApplication {
 			final Joueur gagnantDuPot = this.combinaisonUtil.determinerJoueurAvecLaMeilleureMain(joueurs, cartesVisibles);
 
 			if (nonNull(gagnantDuPot)) {
-				System.out.println(SEPARATEUR);
-				System.out.println(gagnantDuPot.getNom() + " a remporté le pot.");
-				System.out.println(SEPARATEUR);
+				LOGGER.info(SEPARATEUR);
+				LOGGER.info("{} a remporté le pot.", gagnantDuPot.getNom());
+				LOGGER.info(SEPARATEUR);
 				// le joueur gagne le pot
 				gagnantDuPot.recupererLePot(partie.getPot());
 				this.pause(3);
@@ -149,9 +152,9 @@ public class PokerApplication {
 		}
 
 		final Joueur gagnantDuGame = joueurs.stream().filter(j -> j.getJetons() > 0).collect(Collectors.toList()).get(0);
-		System.out.println(SEPARATEUR);
-		System.out.println(gagnantDuGame.getNom() + " a remporté la partie.");
-		System.out.println(SEPARATEUR);
+		LOGGER.info(SEPARATEUR);
+		LOGGER.info("{} a remporté la partie.", gagnantDuGame.getNom());
+		LOGGER.info(SEPARATEUR);
 
 	}
 
@@ -198,7 +201,7 @@ public class PokerApplication {
 
 		partie.setDealer(nonNull(partie.getDealer()) && (joueurs.indexOf(partie.getDealer()) < (joueurs.size() - 1))
 				? joueurs.get(joueurs.indexOf(partie.getDealer()) + 1)
-				: joueurs.get(0));
+						: joueurs.get(0));
 	}
 
 	private void reinitialiserLesCartesEtMainsDesJoueurs(final Setup setup, final List<Joueur> joueurs, final List<Carte> jeuDeCartes,
@@ -215,9 +218,9 @@ public class PokerApplication {
 
 	private void affichagePot(final int pot) {
 
-		System.out.println(SEPARATEUR);
-		System.out.println("Total du pot : " + pot);
-		System.out.println(SEPARATEUR);
+		LOGGER.info(SEPARATEUR);
+		LOGGER.info("Total du pot : {}", pot);
+		LOGGER.info(SEPARATEUR);
 		this.pause(1);
 	}
 
@@ -233,37 +236,31 @@ public class PokerApplication {
 
 			final int indexJoueurPrecedent = joueurs.indexOf(joueurQuiDoitJouer) != 0
 					? joueurs.indexOf(joueurQuiDoitJouer) - 1
-					: joueurs.size() - 1;
-			final ActionJoueurEnum actionPrecedente = joueurs.get(indexJoueurPrecedent).getAction();
+							: joueurs.size() - 1;
+					final ActionJoueurEnum actionPrecedente = joueurs.get(indexJoueurPrecedent).getAction();
 
-			joueurQuiDoitJouer.decider(actionPrecedente, cartesVisibles, partie);
-			System.out.println(joueurQuiDoitJouer.getNom() + " a choisi de " + joueurQuiDoitJouer.getAction());
-			if ((joueurQuiDoitJouer.getJetons() >= partie.getBigBlind()) && ((joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SUIVRE)
-					|| (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.RELANCER))) {
-				this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind());
-				System.out.println(SEPARATEUR);
-				System.out.format(AFFICHAGE_JETONS_JOUEUR, joueurQuiDoitJouer.getNom(), partie.getBigBlind(),
-						joueurQuiDoitJouer.getJetons());
-				System.out.println(SEPARATEUR);
-			} else if ((joueurQuiDoitJouer.getJetons() >= (partie.getBigBlind() * 2))
-					&& (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SURRELANCER)) {
-				this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind() * 2);
-				System.out.println(SEPARATEUR);
-				System.out.format(AFFICHAGE_JETONS_JOUEUR, joueurQuiDoitJouer.getNom(), partie.getBigBlind() * 2,
-						joueurQuiDoitJouer.getJetons());
-				System.out.println(SEPARATEUR);
-			} else {
-				System.out.println(SEPARATEUR);
-				System.out.println(joueurQuiDoitJouer.getNom() + " n'a rien fait");
-				System.out.println(SEPARATEUR);
-			}
-			joueurQuiDoitJouer.setDoitJouer(false);
-			final int indexJoueurSuivant = joueurs.indexOf(joueurQuiDoitJouer) < (joueurs.size() - 1)
-					? joueurs.indexOf(joueurQuiDoitJouer) + 1
-					: 0;
-			joueurs.get(indexJoueurSuivant).setDoitJouer(true);
+					joueurQuiDoitJouer.decider(actionPrecedente, cartesVisibles, partie);
+					LOGGER.info("{} a choisi de {}", joueurQuiDoitJouer.getNom(), joueurQuiDoitJouer.getAction());
+					if ((joueurQuiDoitJouer.getJetons() >= partie.getBigBlind()) && ((joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SUIVRE)
+							|| (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.RELANCER))) {
+						this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind());
+						LOGGER.info(SEPARATEUR);
+					} else if ((joueurQuiDoitJouer.getJetons() >= (partie.getBigBlind() * 2))
+							&& (joueurQuiDoitJouer.getAction() == ActionJoueurEnum.SURRELANCER)) {
+						this.serviceAction.miser(partie, joueurQuiDoitJouer, partie.getBigBlind() * 2);
+						LOGGER.info(SEPARATEUR);
+					} else {
+						LOGGER.info(SEPARATEUR);
+						LOGGER.info("{} n'a rien fait", joueurQuiDoitJouer.getNom());
+						LOGGER.info(SEPARATEUR);
+					}
+					joueurQuiDoitJouer.setDoitJouer(false);
+					final int indexJoueurSuivant = joueurs.indexOf(joueurQuiDoitJouer) < (joueurs.size() - 1)
+							? joueurs.indexOf(joueurQuiDoitJouer) + 1
+									: 0;
+					joueurs.get(indexJoueurSuivant).setDoitJouer(true);
 
-			this.pause(1);
+					this.pause(1);
 		}
 
 		// etat suivant des joueurs
@@ -280,7 +277,7 @@ public class PokerApplication {
 		try {
 			Thread.sleep(seconde * 1000);
 		} catch (final InterruptedException e) {
-			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
 		}
 	}
 
@@ -293,18 +290,20 @@ public class PokerApplication {
 
 		for (final Joueur joueur : joueurs) {
 			final CarteCombinaison carteCombinaison = this.combinaisonUtil.getMeilleureCombinaison(joueur.getCartes(), cartesVisibles);
-			System.out.print("Main de " + joueur.getNom() + " : " + carteCombinaison.getCombinaison());
+			LOGGER.info("Main de {} : {}", joueur.getNom(), carteCombinaison.getCombinaison());
+
+			joueur.setCarteCombinaison(carteCombinaison);
 
 			if (carteCombinaison.getCombinaison() == CombinaisonEnum.HAUTEUR) {
-				System.out.println(" " + carteCombinaison.getHauteur());
+				LOGGER.info("{}", carteCombinaison.getHauteur());
 			} else {
 				if (nonNull(carteCombinaison.getCartes()[0])) {
-					System.out.print(" de " + carteCombinaison.getCartes()[0].name());
+					LOGGER.info(" de {}", carteCombinaison.getCartes()[0].name());
 					if (nonNull(carteCombinaison.getCartes()[1])) {
-						System.out.print(" et de " + carteCombinaison.getCartes()[1].name());
+						LOGGER.info(" et de {}", carteCombinaison.getCartes()[1].name());
 					}
 				}
-				System.out.println(" hauteur " + carteCombinaison.getHauteur());
+				LOGGER.info(" hauteur {}", carteCombinaison.getHauteur());
 			}
 		}
 	}
@@ -312,21 +311,16 @@ public class PokerApplication {
 	private void affichageCartesJoueurs(final List<Joueur> joueurs) {
 
 		for (final Joueur j : joueurs) {
-			System.out.print(j.getNom() + " : ");
+			LOGGER.info("{} : ",j.getNom());
 			this.afficherCarte(j.getCartes());
 		}
 	}
 
 	private void afficherCarte(final List<Carte> cartes) {
 
-		for (final Carte c : cartes) {
-			System.out.print(c.getCarteEnum().name() + " " + c.getCouleur());
-			if (cartes.indexOf(c) != (cartes.size() - 1)) {
-				System.out.print(" | ");
-			}
-		}
-		System.out.println();
-		System.out.println(SEPARATEUR);
+		final String cartesAAfficher = cartes.stream().map(Carte::toString).collect(Collectors.joining("|"));
+		LOGGER.info(cartesAAfficher);
+		LOGGER.info(SEPARATEUR);
 	}
 
 }

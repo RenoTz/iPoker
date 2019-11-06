@@ -16,7 +16,7 @@ public class Carte {
 		return this.couleur;
 	}
 
-	public void setCouleur(ColorEnum couleur) {
+	public void setCouleur(final ColorEnum couleur) {
 
 		this.couleur = couleur;
 	}
@@ -29,6 +29,11 @@ public class Carte {
 	public Integer getValeur() {
 
 		return this.carteEnum.getValeur();
+	}
+
+	@Override
+	public String toString() {
+		return this.carteEnum.name().concat(" de ".concat(this.couleur.name()));
 	}
 
 }

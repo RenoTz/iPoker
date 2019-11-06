@@ -18,22 +18,22 @@ public class DecisionSimple implements InterfaceDecision {
 			final Partie partie) {
 
 		switch (actionPrecedente) {
-			case RELANCER :
-				this.suivreOuRelancerOuPasser(partie, joueur);
-				break;
-			case SURRELANCER :
-				this.suivreOuPasser(joueur);
-				break;
-			case CHECKER :
-				this.checkerOuRelancer(partie, joueur);
-				break;
-			case SUIVRE :
-				this.checkerOuSuivreOuRelancerOuPasser(partie, joueur);
-				break;
-			case ATTENDRE :
-				this.checkerOuRelancer(partie, joueur);
-				break;
-			default :
+		case RELANCER :
+			this.suivreOuRelancerOuPasser(partie, joueur);
+			break;
+		case SURRELANCER :
+			this.suivreOuPasser(joueur);
+			break;
+		case CHECKER :
+			this.checkerOuRelancer(partie, joueur);
+			break;
+		case SUIVRE :
+			this.checkerOuSuivreOuRelancerOuPasser(partie, joueur);
+			break;
+		case ATTENDRE :
+			this.checkerOuRelancer(partie, joueur);
+			break;
+		default :
 
 		}
 
@@ -44,9 +44,7 @@ public class DecisionSimple implements InterfaceDecision {
 		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())) {
 			if (joueur.getCarteCombinaison().getCombinaison().getValeur() > 3) {
 				this.relancer(partie, joueur);
-			} else if (joueur.getAction() == ActionJoueurEnum.SUIVRE) {
-				joueur.setAction(joueur.getAction().actionSuivante(null));
-			} else if (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2) {
+			} else {
 				this.suivre(joueur);
 			}
 		} else {
@@ -71,7 +69,8 @@ public class DecisionSimple implements InterfaceDecision {
 		} else if (joueur.getCarteCombinaison().getCombinaison() != CombinaisonEnum.HAUTEUR) {
 			this.suivre(joueur);
 		} else {
-			this.passer(joueur);
+			this.suivre(joueur);
+			//			this.passer(joueur);
 		}
 	}
 
