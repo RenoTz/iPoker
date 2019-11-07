@@ -235,7 +235,7 @@ public class PokerApplication {
 				try {
 					this.pause(1);
 				} catch (final InterruptedException e) {
-					e.printStackTrace();
+					LOGGER.error(e.getMessage(), e);
 				}
 			});
 		}
