@@ -7,7 +7,6 @@ public class Partie {
 	private int smallBlind;
 	private int bigBlind;
 	private int pot;
-	private int misesDesJoueurs;
 
 	public Partie() {
 
@@ -19,7 +18,7 @@ public class Partie {
 		return this.relanceRestante;
 	}
 
-	public void setRelanceRestante(int relanceRestante) {
+	public void setRelanceRestante(final int relanceRestante) {
 
 		this.relanceRestante = relanceRestante;
 	}
@@ -29,7 +28,7 @@ public class Partie {
 		return this.dealer;
 	}
 
-	public void setDealer(Joueur dealer) {
+	public void setDealer(final Joueur dealer) {
 
 		this.dealer = dealer;
 	}
@@ -39,7 +38,7 @@ public class Partie {
 		return this.pot;
 	}
 
-	public void setPot(int pot) {
+	public void setPot(final int pot) {
 
 		this.pot = pot;
 	}
@@ -49,7 +48,7 @@ public class Partie {
 		return this.smallBlind;
 	}
 
-	public void setSmallBlind(int smallBlind) {
+	public void setSmallBlind(final int smallBlind) {
 
 		this.smallBlind = smallBlind;
 	}
@@ -59,19 +58,10 @@ public class Partie {
 		return this.bigBlind;
 	}
 
-	public void setBigBlind(int bigBlind) {
+	public void setBigBlind(final int bigBlind) {
 
 		this.bigBlind = bigBlind;
 	}
 
-	public int getMisesDesJoueurs() {
-
-		return misesDesJoueurs;
-	}
-
-	public void setMisesDesJoueurs(int misesDesJoueurs) {
-
-		this.misesDesJoueurs = misesDesJoueurs;
-	}
 
 }

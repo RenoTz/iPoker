@@ -11,9 +11,11 @@ public class Joueur {
 	private String nom;
 	private List<Carte> cartes;
 	private int jetons;
+	private int mise;
 	private CarteCombinaison carteCombinaison;
 	private boolean doitJouer;
 	private ActionJoueurEnum action;
+	private boolean dealer;
 
 	private final InterfaceDecision decision;
 
@@ -75,7 +77,7 @@ public class Joueur {
 		this.jetons = jetons;
 	}
 
-	public void recupererLePot(int pot) {
+	public void recupererLePot(final int pot) {
 
 		this.setJetons(this.getJetons() + pot);
 
@@ -86,7 +88,7 @@ public class Joueur {
 		return this.action;
 	}
 
-	public void setAction(ActionJoueurEnum action) {
+	public void setAction(final ActionJoueurEnum action) {
 
 		this.action = action;
 	}
@@ -96,9 +98,25 @@ public class Joueur {
 		return this.doitJouer;
 	}
 
-	public void setDoitJouer(boolean doitJouer) {
+	public void setDoitJouer(final boolean doitJouer) {
 
 		this.doitJouer = doitJouer;
+	}
+
+	public int getMise() {
+		return this.mise;
+	}
+
+	public void setMise(final int mise) {
+		this.mise = mise;
+	}
+
+	public boolean isDealer() {
+		return this.dealer;
+	}
+
+	public void setDealer(final boolean dealer) {
+		this.dealer = dealer;
 	}
 
 }

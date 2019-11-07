@@ -18,6 +18,12 @@ public class DecisionSimple implements InterfaceDecision {
 			final Partie partie) {
 
 		switch (actionPrecedente) {
+		case MISER_SMALL_BLIND:
+			this.suivreOuRelancerOuPasser(partie, joueur);
+			break;
+		case MISER_BIG_BLIND: 
+			this.suivreOuRelancerOuPasser(partie, joueur);
+			break;
 		case RELANCER :
 			this.suivreOuRelancerOuPasser(partie, joueur);
 			break;
@@ -33,6 +39,12 @@ public class DecisionSimple implements InterfaceDecision {
 		case ATTENDRE :
 			this.checkerOuRelancer(partie, joueur);
 			break;
+		case PASSER:
+			this.suivreOuRelancerOuPasser(partie, joueur);
+			break;
+		case A_TERMINER_DE_JOUER :
+			this.suivreOuRelancerOuPasser(partie, joueur);
+			break;
 		default :
 
 		}
@@ -42,10 +54,10 @@ public class DecisionSimple implements InterfaceDecision {
 	private void checkerOuSuivreOuRelancerOuPasser(final Partie partie, final Joueur joueur) {
 
 		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())) {
-			if (joueur.getCarteCombinaison().getCombinaison().getValeur() > 3) {
+			if (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2) {
 				this.relancer(partie, joueur);
 			} else {
-				this.suivre(joueur);
+				this.suivreOuChecker(partie, joueur);
 			}
 		} else {
 			this.passer(joueur);
@@ -60,24 +72,31 @@ public class DecisionSimple implements InterfaceDecision {
 			this.passer(joueur);
 		}
 	}
+	private void suivreOuChecker(final Partie partie, final Joueur joueur) {
+
+		if (joueur.getMise() > partie.getSmallBlind()) {
+			this.checker(joueur);
+		} else {
+			this.suivre(joueur);
+		}
+	}
 
 	private void suivreOuRelancerOuPasser(final Partie partie, final Joueur joueur) {
 
 		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())
 				&& (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2)) {
 			this.relancer(partie, joueur);
-		} else if (joueur.getCarteCombinaison().getCombinaison() != CombinaisonEnum.HAUTEUR) {
+		} else if (joueur.getCarteCombinaison().getCombinaison().getValeur() >= 1) {
 			this.suivre(joueur);
 		} else {
-			this.suivre(joueur);
-			//			this.passer(joueur);
+			this.passer(joueur);
 		}
 	}
 
 	private void checkerOuRelancer(final Partie partie, final Joueur joueur) {
 
 		if ((partie.getRelanceRestante() > 0) && nonNull(joueur.getCarteCombinaison().getCombinaison())
-				&& (joueur.getCarteCombinaison().getCombinaison().getValeur() > 2)) {
+				&& (joueur.getCarteCombinaison().getCombinaison().getValeur() > 1)) {
 			this.relancer(partie, joueur);
 		} else {
 			this.checker(joueur);

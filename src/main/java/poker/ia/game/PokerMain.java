@@ -5,7 +5,7 @@ import poker.ia.game.controller.Setup;
 
 public class PokerMain {
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws InterruptedException {
 
 		// chargement des données
 		final Setup setup = new Setup();
